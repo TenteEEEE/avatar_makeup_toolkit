@@ -6,7 +6,8 @@ class converter():
     converter provides the converted image and the normalized position
     """
 
-    def __init__(self, position=[.0, .0], options={}):
+    def __init__(self, type='', position=[.0, .0], options={}):
+        self.type = type
         self.position = position
         self.converted = {'image': None, 'position': self.position}
         self.options = options

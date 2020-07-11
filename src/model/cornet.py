@@ -6,16 +6,16 @@ from skimage.transform import rotate
 
 # Converter definitions
 class cheek_converter(converter):
-    def __init__(self, position=[.0, .0], options=[]):
-        super().__init__(position, options)
+    def __init__(self, type='face', position=[.0, .0], options=[]):
+        super().__init__(type, position, options)
 
     def convert(self, image):
         return improc.resize(image, [.5, .5])
 
 
 class eye_line_converter(converter):
-    def __init__(self, position=[.0, .0], options=[]):
-        super().__init__(position, options)
+    def __init__(self, type='face', position=[.0, .0], options=[]):
+        super().__init__(type, position, options)
 
     def convert(self, image):
         image = np.array(image)
@@ -25,16 +25,16 @@ class eye_line_converter(converter):
 
 
 class eye_shadow_converter(converter):
-    def __init__(self, position=[.0, .0], options=[]):
-        super().__init__(position, options)
+    def __init__(self, type='face', position=[.0, .0], options=[]):
+        super().__init__(type, position, options)
 
     def convert(self, image):
         return improc.resize(image, [.46, .5])
 
 
 class eye_brow_converter(converter):
-    def __init__(self, position=[.0, .0], options=[]):
-        super().__init__(position, options)
+    def __init__(self, type='face', position=[.0, .0], options=[]):
+        super().__init__(type, position, options)
 
     def convert(self, image):
         image = np.array(image)
@@ -44,8 +44,8 @@ class eye_brow_converter(converter):
 
 
 class lip_converter(converter):
-    def __init__(self, position=[.0, .0], options=[]):
-        super().__init__(position, options)
+    def __init__(self, type='face', position=[.0, .0], options=[]):
+        super().__init__(type, position, options)
 
     def convert(self, image):
         return improc.resize(image, [.7, .7])

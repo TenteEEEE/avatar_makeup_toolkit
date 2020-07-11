@@ -5,8 +5,8 @@ from src.util import improc
 
 
 class cheek_converter(converter):
-    def __init__(self, position=[.0, .0], options=[]):
-        super().__init__(position, options)
+    def __init__(self, type='face', position=[.0, .0], options=[]):
+        super().__init__(type, position, options)
 
     def convert(self, image):
         img = np.array(image)
@@ -16,16 +16,16 @@ class cheek_converter(converter):
 
 
 class eye_shadow_converter(converter):
-    def __init__(self, position=[.0, .0], options=[]):
-        super().__init__(position, options)
+    def __init__(self, type='face', position=[.0, .0], options=[]):
+        super().__init__(type, position, options)
 
     def convert(self, image):
         return improc.resize(image, [.21, .21])
 
 
 class lip_converter(converter):
-    def __init__(self, position=[.0, .0], options=[]):
-        super().__init__(position, options)
+    def __init__(self, type='face', position=[.0, .0], options=[]):
+        super().__init__(type, position, options)
 
     def convert(self, image):
         return improc.resize(image, [.32, .32])

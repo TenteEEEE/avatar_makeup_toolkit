@@ -5,8 +5,8 @@ from src.util import improc
 
 
 class cheek_converter(converter):
-    def __init__(self, position=[.0, .0], options=[]):
-        super().__init__(position, options)
+    def __init__(self, type='face', position=[.0, .0], options=[]):
+        super().__init__(type, position, options)
 
     def convert(self, image):
         img = np.array(image)
@@ -16,24 +16,24 @@ class cheek_converter(converter):
 
 
 class eye_shadow_converter(converter):
-    def __init__(self, position=[.0, .0], options=[]):
-        super().__init__(position, options)
+    def __init__(self, type='face', position=[.0, .0], options=[]):
+        super().__init__(type, position, options)
 
     def convert(self, image):
         return improc.resize(image, [0.66, 0.7])
 
 
 class eye_brow_converter(converter):
-    def __init__(self, position=[.0, .0], options=[]):
-        super().__init__(position, options)
+    def __init__(self, type='face', position=[.0, .0], options=[]):
+        super().__init__(type, position, options)
 
     def convert(self, image):
         return improc.resize(improc.mirror(image), [0.3, 0.8])
 
 
 class lip_converter(converter):
-    def __init__(self, position=[.0, .0], options=[]):
-        super().__init__(position, options)
+    def __init__(self, type='face', position=[.0, .0], options=[]):
+        super().__init__(type, position, options)
 
     def convert(self, image):
         img = np.array(image)
@@ -61,16 +61,16 @@ class lip_converter(converter):
 
 
 class eye_line_converter(converter):
-    def __init__(self, position=[.0, .0], options=[]):
-        super().__init__(position, options)
+    def __init__(self, type='face', position=[.0, .0], options=[]):
+        super().__init__(type, position, options)
 
     def convert(self, image):
         return improc.resize(image, [.7, 1.])
 
 
 class eye_line_sub_converter(converter):
-    def __init__(self, position=[.0, .0], options=[]):
-        super().__init__(position, options)
+    def __init__(self, type='face', position=[.0, .0], options=[]):
+        super().__init__(type, position, options)
 
     def convert(self, image):
         image = image.crop((300, 470, 500, 500))
