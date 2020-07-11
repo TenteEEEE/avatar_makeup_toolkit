@@ -54,5 +54,5 @@ img_loader.set_components(converters.keys())
 
 # Patcher definitions
 class patcher(patcher):
-    def __init__(self, name='Linz', base_tex='./avatar_texture/linz/face.png', mask_tex=None, loader=img_loader, converters=converters, options=None):
+    def __init__(self, name='リンツ', base_tex='./avatar_texture/linz/face.png', mask_tex=None, loader=img_loader, converters=converters, options=None):
         super().__init__(name, base_tex, mask_tex, loader, converters, options)

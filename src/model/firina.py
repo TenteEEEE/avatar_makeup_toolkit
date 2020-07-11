@@ -103,5 +103,5 @@ img_loader.set_components(converters.keys())
 
 
 class patcher(patcher):
-    def __init__(self, name='Firina', base_tex='./avatar_texture/firina/face.png', mask_tex='./avatar_texture/firina/face_mask.png', loader=img_loader, converters=converters, options=None):
+    def __init__(self, name='フィリナ', base_tex='./avatar_texture/firina/face.png', mask_tex='./avatar_texture/firina/face_mask.png', loader=img_loader, converters=converters, options=None):
         super().__init__(name, base_tex, mask_tex, loader, converters, options)
