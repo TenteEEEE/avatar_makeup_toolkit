@@ -1,0 +1,18 @@
+{
+  "model":"quiche",
+  "output":"patched.png",
+  "transparent": false,
+  "texture_type":"face",
+  "index":1,
+  
+  ":":"Index overwrite. default is 0. -1 can disable patching",
+  "cheek":0,
+  "eye_brow":0,
+  "eye_line":0,
+  "eye_shadow":0,
+  "lip":0,
+
+  ":":"When you set \"all\":true, index is ignored",
+  "all":false,
+  "directory":"default"
+}

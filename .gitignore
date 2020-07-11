@@ -1,0 +1,6 @@
+__pycache__
+data
+converted
+*.png
+!material/*/*.png
+!avatar_texture/*/*.png
