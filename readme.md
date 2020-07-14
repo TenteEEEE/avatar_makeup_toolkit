@@ -1,4 +1,5 @@
-# Avatar Makeup Toolkit
+[![](http://img.shields.io/badge/Python-3.6%20%7C%203.7%20%7C%203.8-blue.svg)](http://img.shields.io)
+[![codecov](https://codecov.io/gh/TenteEEEE/avatar_makeup_toolkit/branch/master/graph/badge.svg)](https://codecov.io/gh/TenteEEEE/avatar_makeup_toolkit)
 <div align="center"><img src="https://user-images.githubusercontent.com/9051681/87219430-05eab500-c396-11ea-87fd-c9f669182f36.png"></div>
 
 ## Texture Patching Suite for 3D Avatars

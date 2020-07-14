@@ -1,7 +1,11 @@
-from src.base_class import *
+try:
+    from base_class import *
+    from util import improc
+except:  # Jupyter env
+    from src.base_class import *
+    from src.util import improc
 import numpy as np
 from PIL import Image
-from src.util import improc
 from skimage.transform import rotate
 
 
@@ -57,9 +61,9 @@ class lip_converter(converter):
         arrx = np.sin(np.linspace(0, np.pi / 2, 100) + np.pi / 8)**2 * 80 - 20
         arrx[-20:] += np.sin(np.linspace(0, np.pi / 2, 20)) * 10
         arry = np.zeros(100)
-        lip_u = improc.affine_transform_by_arr(lip_u, arrx, arry)
+        lip_u = improc.affine_transform(lip_u, arrx, arry)
         arrx = np.sin(np.linspace(0, 1, 100))**4 * 150 - 20
-        lip_u = improc.affine_transform_by_arr(np.rot90(lip_u), arrx, arry)
+        lip_u = improc.affine_transform(np.rot90(lip_u), arrx, arry)
         lip_u = np.rot90(lip_u, -1)
         lip_u = improc.resize(lip_u[20:103, 25:-22], [1.25, 1.25])
         lip_u = np.uint8(lip_u * 255)
@@ -67,9 +71,9 @@ class lip_converter(converter):
         lip_l = img[112:, 100:300]
         arrx = np.sin(np.linspace(0, np.pi / 2, 100))**1 * -70
         arry = np.zeros(100)
-        lip_l = improc.affine_transform_by_arr(lip_l, arrx, arry)
+        lip_l = improc.affine_transform(lip_l, arrx, arry)
         arrx = np.linspace(1, 0, 100)**3 * 80
-        lip_l = improc.affine_transform_by_arr(np.rot90(lip_l), arrx, arry)
+        lip_l = improc.affine_transform(np.rot90(lip_l), arrx, arry)
         lip_l = np.rot90(lip_l, -1)
         lip_l = improc.resize(lip_l[5:, 50:-5], [1.05, 1.25])
         lip_l = np.uint8(lip_l * 255)

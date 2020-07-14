@@ -1,8 +1,13 @@
-from src.base_class import *
+try:
+    from base_class import *
+    from util import improc
+except:  # Jupyter env
+    from src.base_class import *
+    from src.util import improc
 import numpy as np
 from PIL import Image
-from src.util import improc
 from skimage.transform import rotate
+
 
 # Converter definitions
 class cheek_converter(converter):

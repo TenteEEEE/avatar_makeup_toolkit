@@ -1,5 +1,8 @@
 from PIL import Image
-from src.util import improc
+try:
+    from util import improc
+except:  # Jupyter env
+    from src.util import improc
 
 
 class patcher():
@@ -36,9 +39,9 @@ class patcher():
         images = self.loader.load_imgs_by_query(query)
         for key in self.converters.keys():
             if key in self.options.keys():
-                if self.options[key] < 0: # Ignore patching
+                if self.options[key] < 0:  # Ignore patching
                     continue
-                elif self.options[key] > 0: # Index overwite
+                elif self.options[key] > 0:  # Index overwite
                     images[key] = self.loader.load_img(self.options[key], key)
             cvts = self.converters[key]
             cvts = [cvts] if type(cvts) is not list else cvts

@@ -4,3 +4,6 @@ converted
 *.png
 !material/*/*.png
 !avatar_texture/*/*.png
+htmlcov
+.coverage
+.pytest_cache

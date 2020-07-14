@@ -1,7 +1,11 @@
-from src.base_class import *
+try:
+    from base_class import *
+    from util import improc
+except:  # Jupyter env
+    from src.base_class import *
+    from src.util import improc
 import numpy as np
 from PIL import Image
-from src.util import improc
 
 
 class cheek_converter(converter):
@@ -42,16 +46,16 @@ class lip_converter(converter):
 
         arrx = np.sin(np.linspace(0, np.pi / 2, 100) + np.pi / 8)**2 * 100 - 20
         arry = np.zeros(100)
-        lip_u = improc.affine_transform_by_arr(lip_u, arrx, arry)
+        lip_u = improc.affine_transform(lip_u, arrx, arry)
         arrx = np.sin(np.linspace(0, 1, 100))**2 * 100 - 20
-        lip_u = improc.affine_transform_by_arr(np.rot90(lip_u), arrx, arry)
+        lip_u = improc.affine_transform(np.rot90(lip_u), arrx, arry)
         lip_u = np.rot90(lip_u, -1)[:, 25:-18]
 
         arrx = np.sin(np.linspace(0, np.pi / 2, 100))**1 * -70
         arry = np.zeros(100)
-        lip_l = improc.affine_transform_by_arr(lip_l, arrx, arry)
+        lip_l = improc.affine_transform(lip_l, arrx, arry)
         arrx = np.linspace(1, 0, 100)**3 * 80
-        lip_l = improc.affine_transform_by_arr(np.rot90(lip_l), arrx, arry)
+        lip_l = improc.affine_transform(np.rot90(lip_l), arrx, arry)
         lip_l = np.rot90(lip_l, -1)
 
         img = np.concatenate([lip_u[:-20, :], lip_l[10:, 43:]], axis=0)

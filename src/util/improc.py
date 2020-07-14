@@ -10,31 +10,7 @@ def perspective_transform(img, matrix):
     return out
 
 
-def affine_transform(img, mx, my, phix=0, phiy=0, divx=2, divy=2, inv=False):
-    [r, c, d] = img.shape
-    src_cols = np.linspace(0, c, 10)
-    src_rows = np.linspace(0, r, 10)
-    src_rows, src_cols = np.meshgrid(src_rows, src_cols)
-    src = np.dstack([src_cols.flat, src_rows.flat])[0]
-    shifter_row = np.zeros(src.shape[0])
-    shifter_col = np.zeros(src.shape[0])
-    if inv:
-        linex = np.linspace(np.pi + phix, np.pi / divx + phix, src.shape[0])
-        liney = np.linspace(np.pi + phiy, np.pi / divy + phiy, src.shape[0])
-    else:
-        linex = np.linspace(np.pi / divx + phix, np.pi + phix, src.shape[0])
-        liney = np.linspace(np.pi / divy + phiy, np.pi + phiy, src.shape[0])
-    shifter_row = -(np.sin(linex) * mx)
-    shifter_col = -(np.sin(liney) * my)
-    dst_rows = src[:, 1] + shifter_row
-    dst_cols = src[:, 0] + shifter_col
-    dst = np.vstack([dst_cols, dst_rows]).T
-    affin = skt.PiecewiseAffineTransform()
-    affin.estimate(src, dst)
-    return skt.warp(img, affin)
-
-
-def affine_transform_by_arr(img, arrx, arry, smoothx=False, smoothy=False, mvx=10, mvy=10):
+def affine_transform(img, arrx, arry, smoothx=False, smoothy=False, mvx=10, mvy=10):
     [r, c, d] = img.shape
     src_cols = np.linspace(0, c, int(np.sqrt(len(arrx))))
     src_rows = np.linspace(0, r, int(np.sqrt(len(arry))))
