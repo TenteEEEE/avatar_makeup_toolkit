@@ -1,3 +1,4 @@
+import os
 from PIL import Image
 try:
     from util import improc
@@ -5,54 +6,80 @@ except:  # Jupyter env
     from src.util import improc
 
 
-class patcher():
-    """
-    patcher provides patched images via various converters
-    """
-
-    def __init__(self, name, base_tex="./avatar_texture/quiche/face.png", mask_tex=None, loader=None, converters={}, options={}):
-        self.name = name
-        self.base = Image.open(base_tex)
-        self.base_size = self.base.size
+class patcher:
+    def __init__(self, loader, converter, position=[0., 0.], basesize=2048, options={}):
         self.loader = loader
-        self.converters = converters
-        if mask_tex is None:
-            self.mask = mask_tex
-        else:
-            self.mask = Image.open(mask_tex).convert('L')
-        try:
-            self.options = options['options']
-        except:
-            self.options = options
+        self.converter = converter
+        self.basesize = basesize
+        self.position = position
+        # when the position is > 1.0, it normalizes the position by basesize
+        if True in [p > 1. for p in self.position]:
+            self.position = [p / basesize for p in self.position]
+        self.options = options
+        self.set_options(self.options)
+
+    def patch(self, texture, index, material=None, mask=None):
+        if material is None:
+            material = self.load_img(index)
+        material = self.convert(material)
+        position = [round(self.position[i] * texture.size[i]) for i in range(2)]
+        if material is not None:  # if index is out of bounds or <0, material is None
+            if mask is None:
+                texture = improc.overlay(texture, material, position)
+            else:
+                texture = improc.overlay_with_mask(patched, material, mask, position)
+        return texture
+
+    def set_options(self, options):
+        self.loader.options = options
+        self.converter.options = options
+
+    def load_img(self, index):
+        return self.loader.load_img(index)
+
+    def convert(self, image):
+        return self.converter.convert(image)
+
+
+class model_manager:
+    def __init__(self, model, displayname='キッシュ', rootdir="./avatar_texture/", patchers={}, options={}):
+        self.model = model
+        self.displayname = displayname
+        self.rootdir = rootdir + '/' if rootdir[-1] is not '/' else rootdir
+        self.patchers_dict = patchers
+        self.support_parts = patchers.keys()
+        # if mask_tex is not None:
+        #     self.mask = Image.open(mask_tex).convert('L')
+        # else:
+        #     self.mask = None
+        # try:
+        #     self.options = options['options']
+        # except:
+        self.options = options
 
     def __len__(self):
-        return self.loader.data_num
+        return len(self.patchers)
 
-    def patch(self, index, transparent=False):
+    def patch_part(self, part, setindex, transparent=False):
+        patched = Image.open(f'{self.rootdir}{self.model}/{part}.png')
         if transparent:
-            patched = Image.new("RGBA", self.base_size)
+            patched = Image.new("RGBA", patched.size)
+        if os.path.exists(f'{self.rootdir}{self.model}/{part}_mask.png'):
+            mask = Image.open(f'{self.rootdir}{self.model}/{part}_mask.png').convert('L')
         else:
-            patched = self.base.copy()
-        query = self.loader.make_query(index)
-        if len(query) == 0:
-            return None
-        images = self.loader.load_imgs_by_query(query)
-        for key in self.converters.keys():
-            if key in self.options.keys():
-                if self.options[key] < 0:  # Ignore patching
+            mask = None
+
+        part_patchers = self.patchers_dict[part]
+        for material in part_patchers.keys():
+            index = setindex
+            if material in self.options.keys():
+                if self.options[material] < 0:  # Ignore patching
                     continue
-                elif self.options[key] > 0:  # Index overwite
-                    images[key] = self.loader.load_img(self.options[key], key)
-            cvts = self.converters[key]
-            cvts = [cvts] if type(cvts) is not list else cvts
-            for cvt in cvts:
-                cvt.options = self.options
-                converted = cvt.get_converted(images[key])
-                position = [int(converted['position'][i] * self.base_size[i]) for i in range(2)]
-                if self.mask is None:
-                    patched = improc.overlay(patched, converted['image'], position)
-                else:
-                    patched = improc.overlay_with_mask(patched, converted['image'], self.mask, position)
+                elif self.options[material] > 0:  # Index overwite
+                    index = self.options[material]
+            for p in part_patchers[material]:
+                p.set_options(self.options)
+                patched = p.patch(patched, index, mask=mask)
         return patched
 
     def ask(self, question, default=False, default_msg=None):

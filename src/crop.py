@@ -6,12 +6,12 @@ fname = '0003.png'
 components = ['cheek/', 'eye_brow/', 'eye_line/', 'eye_shadow/', 'lip/']
 sdir = './material/'
 
-flist = os.listdir(fdir)
+filelist = os.listdir(fdir)
 
-cheek = io.imread(fdir+flist[0])
-eye_brow_line = io.imread(fdir+flist[1])
-eye = io.imread(fdir+flist[2])
-lip = io.imread(fdir+flist[3])
+cheek = io.imread(fdir+filelist[0])
+eye_brow_line = io.imread(fdir+filelist[1])
+eye = io.imread(fdir+filelist[2])
+lip = io.imread(fdir+filelist[3])
 
 cheek = cheek[2200:3400,300:-300]
 eye_brow = eye_brow_line[:230,950:2040] 

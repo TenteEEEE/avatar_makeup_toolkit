@@ -8,6 +8,9 @@ from concurrent.futures import ThreadPoolExecutor
 sys.path.append('./src/')
 import model
 
+# module = importlib.import_module('model.' + 'quiche')
+# patcher = module.manager
+
 def setup():
     parser = argparse.ArgumentParser()
     parser.add_argument('-m', '--model', help='Choose your model', choices=model.model_list)
@@ -34,6 +37,7 @@ def setup():
         args.directory = args.options['directory']
         args.transparent = args.options['transparent']
         args.output = args.options['output']
+        args.part = args.options['texture_type']
     else:
         args.options = {}
 
@@ -61,19 +65,22 @@ def setup():
         
     if args.fdir[-1] != '/':
         args.fdir += '/'
+        
+    args.part = "face"
     return args
 
 
 def gen_args(module, itr, transp, fdir, options):
     for i in itr:
-        yield {'module': module, 'index': i, 'is_transp': transp, 'fdir': fdir, 'options': options}
+        yield {'module': module, 'index': i, 'is_transp': transp, 'fdir': fdir, 'options': options, 'part': 'face'}
 
 
 def patch_and_save(args):
     print(f'Processing:{args["index"]+1:04}')
-    p = args['module'].patcher(options=args['options'])
+    p = args['module'].manager
+    p.options = args['options']
     try:
-        out = p.patch(args['index'], transparent=args['is_transp'])
+        out = p.patch_part(args['part'], args['index'], transparent=args['is_transp'])
         out.save(f'{args["fdir"]}{args["index"]:04}.png')
         return 1
     except:
@@ -88,20 +95,22 @@ def main():
         return
     os.makedirs(args.fdir, exist_ok=True)
     module = importlib.import_module('model.' + args.model)
-    patcher = module.patcher(options = args.options)
+    # patcher = module.patcher(options = args.options)
+    patcher = module.manager
+    patcher.options = args.options
 
     if args.all:
         args.itr = range(len(patcher))
         with ThreadPoolExecutor(max_workers=int(os.cpu_count() / 2 + .5)) as exe:
             result = exe.map(patch_and_save, gen_args(module, args.itr, args.transparent, args.fdir, args.options))
     else:
-        if args.index < 0:
-            args.index = len(patcher) - 1
-        elif args.index > len(patcher):
-            print('The index is out of bounds')
-            return -1
+        # if args.index < 0:
+        #     args.index = len(patcher) - 1
+        # elif args.index > len(patcher):
+        #     print('The index is out of bounds')
+        #     return -1
         print(f'Processing:{args.index+1:04d}')
-        out = patcher.patch(args.index, transparent=args.transparent)
+        out = patcher.patch_part(args.part, args.index, transparent=args.transparent)
         out.save(args.output)
 
 
