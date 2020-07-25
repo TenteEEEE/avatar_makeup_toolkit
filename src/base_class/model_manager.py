@@ -5,7 +5,7 @@ class model_manager:
     def __init__(self, model, displayname='キッシュ', rootdir="./avatar_texture/", patchers={}, options={}):
         self.model = model
         self.displayname = displayname
-        self.rootdir = rootdir + '/' if rootdir[-1] is not '/' else rootdir
+        self.rootdir = rootdir + '/' if rootdir[-1] != '/' else rootdir
         self.patchers_dict = patchers
         self.support_parts = list(patchers.keys())
         self.options = options
