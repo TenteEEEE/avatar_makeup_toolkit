@@ -6,23 +6,26 @@ import pytest
 import model
 from base_class import *
 
-def gen_options():
-    imgloader = loader()
-    for index, component in enumerate(imgloader.components):
-        options = {}
-        flag = [0]*len(imgloader.components)
-        flag[index] = -1
-        options.update(zip(imgloader.components, flag))
-        yield options
 
-@pytest.mark.parametrize("model_name", model.model_list)
-@pytest.mark.parametrize("options", gen_options())
-def test_model_error(model_name, options):
-    # Testing each model with index overwrite options
-    module = importlib.import_module('model.' + model_name)
-    patcher = module.patcher(options=options)
+def gen_options(models):
+    for m in models:
+        module = importlib.import_module('model.' + m)
+        manager = module.manager
+        for part in manager.support_parts:
+            components = manager.patchers_dict[part].keys()
+            for index, component in enumerate(components):
+                options = {}
+                flag = [0] * len(components)
+                flag[index] = -1
+                options.update(zip(components, flag))
+                yield m, manager, part, options
+
+
+@pytest.mark.parametrize("model, manager, part, options", gen_options(model.model_list))
+def test_model_error(model, manager, part, options):
+    manager.options = options
     try:
-        out = patcher.patch(0)
+        out = manager.patch_part(part, 0)
         assert True
     except:
         assert False

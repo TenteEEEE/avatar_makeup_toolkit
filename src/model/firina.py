@@ -10,8 +10,8 @@ from skimage.transform import rotate
 
 
 class cheek_converter(converter):
-    def __init__(self, type='face', position=[.0, .0], options=[]):
-        super().__init__(type, position, options)
+    def __init__(self, options=[]):
+        super().__init__(options)
 
     def convert(self, image):
         img = np.array(image)
@@ -21,17 +21,17 @@ class cheek_converter(converter):
 
 
 class eye_shadow_converter(converter):
-    def __init__(self, type='face', position=[.0, .0], options=[]):
-        super().__init__(type, position, options)
+    def __init__(self, options=[]):
+        super().__init__(options)
 
     def convert(self, image):
         return improc.resize(image, [0.82, 0.82])
 
 
 class eye_line_converter(converter):
-    def __init__(self, position=[.0, .0], mask_tex='./avatar_texture/firina/eye_line_mask.png', options=[]):
-        super().__init__(type, position, options)
-        self.mask_tex = mask_tex
+    def __init__(self, options=[]):
+        super().__init__(options)
+        self.mask_tex = './avatar_texture/firina/eye_line_mask.png'
 
     def convert(self, image):
         mask = Image.open(self.mask_tex)
@@ -44,16 +44,16 @@ class eye_line_converter(converter):
 
 
 class eye_brow_converter(converter):
-    def __init__(self, type='face', position=[.0, .0], options=[]):
-        super().__init__(type, position, options)
+    def __init__(self, options=[]):
+        super().__init__(options)
 
     def convert(self, image):
         return improc.resize(image, [1., .86])
 
 
 class lip_converter(converter):
-    def __init__(self, type='face', position=[.0, .0], options=[]):
-        super().__init__(type, position, options)
+    def __init__(self, options=[]):
+        super().__init__(options)
 
     def convert(self, image):
         img = np.array(image)
@@ -84,28 +84,23 @@ class lip_converter(converter):
 
 
 class eye_line_sub_converter(converter):
-    def __init__(self, type='face', position=[.0, .0], options=[]):
-        super().__init__(type, position, options)
+    def __init__(self, options=[]):
+        super().__init__(options)
 
     def convert(self, image):
         image = image.crop((300, 470, 500, 500))
         return improc.resize(image, [4.3, 4.3])
 
 
-base_size = 4096
-converters = {}
-converters['cheek'] = cheek_converter(position=[823 / base_size, 2485 / base_size])
-converters['eye_shadow'] = eye_shadow_converter(position=[860 / base_size, 2073 / base_size])
-converters['eye_brow'] = eye_brow_converter(position=[2149 / base_size, 692 / base_size])
-converters['eye_line'] = [eye_line_converter(position=[981 / base_size, 206 / base_size]),
-                          eye_line_sub_converter(position=[1129 / base_size, 110 / base_size])]
-converters['lip'] = lip_converter(position=[1868 / base_size, 3183 / base_size])
+basesize = 4096
+patchers = dict.fromkeys(['face'])
+patchers['face'] = {
+    'cheek': [patcher(loader('cheek'), cheek_converter(), [823, 2485], basesize=basesize)],
+    'eye_shadow': [patcher(loader('eye_shadow'), eye_shadow_converter(), [860, 2073], basesize=basesize)],
+    'eye_brow': [patcher(loader('eye_brow'), eye_brow_converter(), [2149, 692], basesize=basesize)],
+    'eye_line': [patcher(loader('eye_line'), eye_line_converter(), [981, 206], basesize=basesize),
+                 patcher(loader('eye_line'), eye_line_sub_converter(), [1129, 110], basesize=basesize)],
+    'lip': [patcher(loader('lip'), lip_converter(), [1868, 3183], basesize=basesize)],
+}
 
-
-img_loader = loader()
-img_loader.set_components(converters.keys())
-
-
-class patcher(patcher):
-    def __init__(self, name='フィリナ', base_tex='./avatar_texture/firina/face.png', mask_tex='./avatar_texture/firina/face_mask.png', loader=img_loader, converters=converters, options=None):
-        super().__init__(name, base_tex, mask_tex, loader, converters, options)
+manager = model_manager(model='firina', displayname='フィリナ', patchers=patchers, options={})

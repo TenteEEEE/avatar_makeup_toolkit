@@ -9,8 +9,8 @@ from PIL import Image
 
 
 class cheek_converter(converter):
-    def __init__(self, type='face', position=[.0, .0], options=[]):
-        super().__init__(type, position, options)
+    def __init__(self, options=[]):
+        super().__init__(options)
 
     def convert(self, image):
         img = np.array(image)
@@ -20,31 +20,27 @@ class cheek_converter(converter):
 
 
 class eye_shadow_converter(converter):
-    def __init__(self, type='face', position=[.0, .0], options=[]):
-        super().__init__(type, position, options)
+    def __init__(self, options=[]):
+        super().__init__(options)
 
     def convert(self, image):
         return improc.resize(image, [.21, .21])
 
 
 class lip_converter(converter):
-    def __init__(self, type='face', position=[.0, .0], options=[]):
-        super().__init__(type, position, options)
+    def __init__(self, options=[]):
+        super().__init__(options)
 
     def convert(self, image):
         return improc.resize(image, [.32, .32])
 
 
-base_size = 1024
-converters = {}
-converters['cheek'] = cheek_converter(position=[250 / base_size, 550 / base_size])
-converters['eye_shadow'] = eye_shadow_converter(position=[207 / base_size, 446 / base_size])
-converters['lip'] = lip_converter(position=[417 / base_size, 737 / base_size])
+basesize = 1024
+patchers = dict.fromkeys(['face'])
+patchers['face'] = {
+    'cheek': [patcher(loader('cheek'), cheek_converter(), [250, 550], basesize=basesize)],
+    'eye_shadow': [patcher(loader('eye_shadow'), eye_shadow_converter(), [207, 446], basesize=basesize)],
+    'lip': [patcher(loader('lip'), lip_converter(), [417, 737], basesize=basesize)],
+}
 
-img_loader = loader()
-img_loader.set_components(converters.keys())
-
-
-class patcher(patcher):
-    def __init__(self, name='VRoid', base_tex='./avatar_texture/vroid/face.png', mask_tex=None, loader=img_loader, converters=converters, options=None):
-        super().__init__(name, base_tex, mask_tex, loader, converters, options)
+manager = model_manager(model='vroid', displayname='VRoid', patchers=patchers, options={})

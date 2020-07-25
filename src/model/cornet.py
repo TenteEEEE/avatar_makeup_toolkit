@@ -11,16 +11,16 @@ from skimage.transform import rotate
 
 # Converter definitions
 class cheek_converter(converter):
-    def __init__(self, type='face', position=[.0, .0], options=[]):
-        super().__init__(type, position, options)
+    def __init__(self, options=[]):
+        super().__init__(options)
 
     def convert(self, image):
         return improc.resize(image, [.5, .5])
 
 
 class eye_line_converter(converter):
-    def __init__(self, type='face', position=[.0, .0], options=[]):
-        super().__init__(type, position, options)
+    def __init__(self, options=[]):
+        super().__init__(options)
 
     def convert(self, image):
         image = np.array(image)
@@ -30,16 +30,16 @@ class eye_line_converter(converter):
 
 
 class eye_shadow_converter(converter):
-    def __init__(self, type='face', position=[.0, .0], options=[]):
-        super().__init__(type, position, options)
+    def __init__(self, options=[]):
+        super().__init__(options)
 
     def convert(self, image):
         return improc.resize(image, [.46, .5])
 
 
 class eye_brow_converter(converter):
-    def __init__(self, type='face', position=[.0, .0], options=[]):
-        super().__init__(type, position, options)
+    def __init__(self, options=[]):
+        super().__init__(options)
 
     def convert(self, image):
         image = np.array(image)
@@ -49,26 +49,21 @@ class eye_brow_converter(converter):
 
 
 class lip_converter(converter):
-    def __init__(self, type='face', position=[.0, .0], options=[]):
-        super().__init__(type, position, options)
+    def __init__(self, options=[]):
+        super().__init__(options)
 
     def convert(self, image):
         return improc.resize(image, [.7, .7])
 
 
-base_size = 2048
-converters = {}
-converters['cheek'] = cheek_converter(position=[150 / base_size, 1100 / base_size])
-converters['eye_line'] = eye_line_converter(position=[486 / base_size, 72 / base_size])
-converters['eye_shadow'] = eye_shadow_converter(position=[301 / base_size, 911 / base_size])
-converters['eye_brow'] = eye_brow_converter(position=[434 / base_size, -38 / base_size])
-converters['lip'] = lip_converter(position=[816 / base_size, 1499 / base_size])
+basesize = 2048
+patchers = dict.fromkeys(['face'])
+patchers['face'] = {
+    'cheek': [patcher(loader('cheek'), cheek_converter(), [150, 1100], basesize=basesize)],
+    'eye_line': [patcher(loader('eye_line'), eye_line_converter(), [486, 72], basesize=basesize)],
+    'eye_shadow': [patcher(loader('eye_shadow'), eye_shadow_converter(), [301, 911], basesize=basesize)],
+    'eye_brow': [patcher(loader('eye_brow'), eye_brow_converter(), [434, -38], basesize=basesize)],
+    'lip': [patcher(loader('lip'), lip_converter(), [816, 1499], basesize=basesize)],
+}
 
-# Image loader definitions
-img_loader = loader()
-img_loader.set_components(converters.keys())
-
-# Patcher definitions
-class patcher(patcher):
-    def __init__(self, name='コルネット', base_tex='./avatar_texture/cornet/face.png', mask_tex=None, loader=img_loader, converters=converters, options=None):
-        super().__init__(name, base_tex, mask_tex, loader, converters, options)
+manager = model_manager(model='cornet', displayname='コルネット', patchers=patchers, options={})
