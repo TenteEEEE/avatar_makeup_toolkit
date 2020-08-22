@@ -85,3 +85,6 @@ def overlay_with_mask(ref, template, mask, pos=[0, 0]):
 def masking(ref, mask):
     tmp = Image.new("RGBA", ref.size)
     return Image.composite(ref, tmp, mask)
+    
+def rotate(img, deg, resize=True):
+    return skt.rotate(img, deg, resize=resize)

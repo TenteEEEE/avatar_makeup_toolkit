@@ -6,7 +6,6 @@ except:  # Jupyter env
     from src.util import improc
 import numpy as np
 from PIL import Image
-from skimage.transform import rotate
 
 
 class cheek_converter(converter):
@@ -37,7 +36,7 @@ class eye_line_converter(converter):
         mask = Image.open(self.mask_tex)
         image = improc.resize(image, [.66, 1.07])
         image = np.array(image)
-        image = rotate(image, -5, resize=True)
+        image = improc.rotate(image, -5, resize=True)
         image = Image.fromarray(np.uint8(image * 255))
         image = improc.masking(image, mask)
         return image

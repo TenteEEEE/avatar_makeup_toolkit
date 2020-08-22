@@ -15,6 +15,7 @@ See [Wiki](https://github.com/TenteEEEE/avatar_makeup_toolkit/wiki/Install-%E3%8
 * [Firina](https://booth.pm/ja/items/1577042)
 * [Lua](https://booth.pm/ja/items/1255054)
 * [VRoid](https://vroid.com/)
+* [RearAlice](https://booth.pm/ja/items/2146588)
 
 ## Special thanks
 * [@4ra8](https://twitter.com/4ra8_) who drew the makeup textures.  
